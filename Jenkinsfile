@@ -3,7 +3,8 @@ node("JenkinsMasterDocker") {
   def appName = 'spin-kub-demo'
   def feSvcName = "${appName}-frontend"
   def imageTag = "devopsevd/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
-
+  def mvnHome = tool 'Maven'
+  
   checkout scm
 
   switch (env.BRANCH_NAME) {
