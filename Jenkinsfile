@@ -25,18 +25,25 @@ node("JenkinsMasterDocker") {
         //sh("kubectl --namespace=production apply -f k8s/production/")
         //sh("echo http://`kubectl --namespace=production get service/${feSvcName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${feSvcName}")
         echo "master branch"
-        stage("Master: Unit Test"){          
+        stage("Master: Unit Test"){   
+            sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package cobertura:cobertura -Dcobertura.report.format=xml"
         }
-        stage("Master: Code Scan"){          
+        stage("Master: Code Scan"){      
+            def scannerHome = tool 'SonarQubeScanner'
+            withSonarQubeEnv('Sonar') { 
+                if (isUnix()) {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
         }
-        stage("Master: Code Coverage"){          
+        stage('Unit Test Results') {
+            junit '**/target/surefire-reports/TEST-*.xml'
+            //archive 'target/*.jar'
+            step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: '**/target/site/cobertura/coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 0, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
         }
         stage ("Master: Build image"){
               //sh("docker build -t ${imageTag} .")
               echo "imageTag: ${imageTag}"
-        }
-        stage ("Master: Run Go tests"){
-             //sh("docker run ${imageTag} go test")
         }
         stage ("Master: Push image to registry"){
             //sh("docker login -u devopsevd -p Gapple@123")
@@ -55,9 +62,21 @@ node("JenkinsMasterDocker") {
         //sh("kubectl --namespace=${env.BRANCH_NAME} apply -f k8s/dev/")
         //echo 'To access your environment run `kubectl proxy`'
         echo "${env.BRANCH_NAME} branch"
-        stage("${env.BRANCH_NAME}: Unit Test"){          
+        stage("${env.BRANCH_NAME}: Unit Test"){ 
+            sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean cobertura:cobertura -Dcobertura.report.format=xml"
         }
-        stage("${env.BRANCH_NAME}: Code Scan"){          
+        stage("${env.BRANCH_NAME}: Code Scan"){ 
+            def scannerHome = tool 'SonarQubeScanner'
+            withSonarQubeEnv('Sonar') { 
+                if (isUnix()) {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }
+        stage('Unit Test Results') {
+            junit '**/target/surefire-reports/TEST-*.xml'
+            //archive 'target/*.jar'
+            step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: '**/target/site/cobertura/coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 0, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
         }
     }
  }
