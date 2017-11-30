@@ -1,4 +1,4 @@
-node("JenkinsMasterDocker") {
+node("BuildServer") {
   def project = 'spin-kub-demo'
   def appName = 'spin-kub-demo'
   def feSvcName = "${appName}-frontend"
