@@ -1,1 +1,1 @@
-Simple Spring Application - update 5
+Simple Spring Application - update 6
