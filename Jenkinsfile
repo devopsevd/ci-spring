@@ -31,7 +31,7 @@ node("BuildServer") {
 
         }
         stage ("Master: Push image to registry"){
-            sh("docker login -u devopsevd -p Gapple@123")
+            //sh("docker login -u # -p #")
             sh("docker push ${imageTag}")
         }
         break
