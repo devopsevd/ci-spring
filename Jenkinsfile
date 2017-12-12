@@ -1,4 +1,4 @@
-node("BuildServer") {
+node() {
   def project = 'ci-spring-demo'
   def appName = 'ci-spring-demo'
   def imageTag = "devopsevd/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
