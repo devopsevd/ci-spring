@@ -5,7 +5,7 @@ node() {
   def mvnHome = tool 'Maven'
   
   checkout scm
-
+  echo "${env.TAG_NAME}"
   switch (env.BRANCH_NAME) {
     case "master":
         echo "master branch"
