@@ -36,7 +36,7 @@ node("BuildServer") {
         }
         break
 
-    // Roll out a dev environment
+
     default:
         echo "${env.BRANCH_NAME} branch"
         stage("${env.BRANCH_NAME}: Unit Test"){ 
