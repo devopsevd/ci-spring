@@ -1,7 +1,6 @@
 node("BuildServer") {
-  def project = 'spin-kub-demo'
-  def appName = 'spin-kub-demo'
-  def feSvcName = "${appName}-frontend"
+  def project = 'ci-spring-demo'
+  def appName = 'ci-spring-demo'
   def imageTag = "devopsevd/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
   def mvnHome = tool 'Maven'
   
